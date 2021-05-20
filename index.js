@@ -47,26 +47,36 @@ const init = () => {
       geometry: new ol.geom.Point(
         ol.proj.fromLonLat([point.x, point.y])
       ),
-      // color: pm10,
     });
 
+
+    //NOTE: if I uncomment these next part, the browser doesn't load, probably because it does not have much power
+
+
+    /*
     feature.setStyle(new ol.style.Style({
       image: new ol.style.Circle({
         fill: new ol.style.Fill({
           color: [pm10, pm10, pm10, 0.6],//`rgba(${pm10},${pm10},${pm10},0.6)`,
-        })
+        }),
+        stroke: new ol.style.Stroke({
+          color: [pm10, pm10, pm10, 0.6]
+        }),
+        radius: 0.1
       })}));
+
+
+     */
     features.push(feature);
   }
 
-  console.log(features);
+  // if I uncomment the next part it will not work and the points would not be shown
+/*
+  const layerStyle = new ol.style.Style({
 
-  // const layerStyle = new ol.style.Style({
-  //
-  //   fill: new Fill({
-  //     color: 'rgba(255, 255, 255, 0.6)',
-  //   }),
-    /*
+    fill: new Fill({
+      color: 'rgba(255, 255, 255, 0.6)',
+    }),
     symbol: {
       symbolType: 'square',
       size: [
@@ -93,14 +103,14 @@ const init = () => {
       rotateWithView: false,
       offset: [0, 0],
       opacity: 80
-    }*/
-  // });
-
+    }
+  });
+*/
   const vector = new ol.source.Vector({features: []});
 
   vector.addFeatures(features);
 
-  const vectorLayer = new ol.layer.Vector({ //WebGLPoints.WebGLPointsLayer({
+  const vectorLayer = new ol.layer.Vector({
     source: vector,
     // style: layerStyle,
   });

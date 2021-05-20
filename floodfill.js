@@ -34,7 +34,7 @@ const floodFill = (points, station, stationI, stationJ, max) => {
 
     let pm10Value = stationHeight + heightAllowanceFactor >= z && pm10 > 0 ? pm10: 0;
 
-    pm10Value = getBigger(points[i][j].pm10, pm10Value);
+    pm10Value = getBiggerNumber(points[i][j].pm10, pm10Value);
     points[i][j] = {
       x: x,
       y: y,
@@ -52,7 +52,7 @@ const floodFill = (points, station, stationI, stationJ, max) => {
   }
 };
 
-const getBigger = (a, b) => {
+const getBiggerNumber = (a, b) => {
   return a > b ? a : b;
 };
 
