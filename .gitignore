@@ -1,0 +1,9 @@
+**/Maven/target/**
+**/node_modules/**
+**/.cache/**
+**/.idea/**
+**/dist/**
+
+**.jar
+**.class
+**.iml
