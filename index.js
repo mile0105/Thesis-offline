@@ -10,13 +10,45 @@ import {readPoints, readStations} from "./readService";
 import {floodFill} from "./floodfill";
 import {getMaxPollutionFromStations, getNearestPointPosition} from "./helper";
 */
-
 const init = () => {
+
+  // Initialize here for use with styling function:
+  var maxValue=50;
+
+  function PM10StyleFunction(feature, resolution)
+  {
+    var featureColor = null;
+    var value = feature.pm10; //feature.get('pm10');
+
+    var pixVal = Math.round((value / maxValue)* 255);
+    //console.log(value+","+pixVal+","+maxValue);
+
+    return [new ol.style.Style({
+      image: new ol.style.Circle({
+        fill: new ol.style.Fill({
+          color: [pixVal, pixVal, pixVal, 0.5],
+        }),
+        stroke: new ol.style.Stroke({
+          color: [pixVal, pixVal, pixVal, 0.5]
+        }),
+        radius: 4.0
+      })
+    })];
+  }
+
+  var vectorLayer = new ol.layer.VectorImage({
+    source: new ol.source.Vector(),
+    style: PM10StyleFunction
+
+  });
+
+
   const points = readPoints();
   const stations = readStations();
   let interpolatedPoints = [];
 
-  let max = getMaxPollutionFromStations(stations);
+  //let max = getMaxPollutionFromStations(stations);
+  maxValue = getMaxPollutionFromStations(stations);
 
   for (let station of stations) {
     const nearestPointPositions = getNearestPointPosition(points, station);
@@ -24,98 +56,21 @@ const init = () => {
     const i = nearestPointPositions[0];
     const j = nearestPointPositions[1];
 
-    floodFill(points, station, i, j, max);
+    floodFill(points, station, i, j, maxValue);
   }
 
   for (let point of points.flat()) {
-    interpolatedPoints.push({
-      x: point.x,
-      y: point.y,
-      pm10: point.pm10 * 255 / max,
-    })
-  }
-
-  let features = [];
-  const N = interpolatedPoints.length;
-
-  const centerPoint = interpolatedPoints[N - 1];
-
-  for (let point of interpolatedPoints) {
-    const pm10 = point.pm10;
-
-    const feature = new ol.Feature({
+    var feature = new ol.Feature({
       geometry: new ol.geom.Point(
         ol.proj.fromLonLat([point.x, point.y])
       ),
     });
-
-
-    //NOTE: if I uncomment these next part, the browser doesn't load, probably because it does not have much power
-
-
-    /*
-    feature.setStyle(new ol.style.Style({
-      image: new ol.style.Circle({
-        fill: new ol.style.Fill({
-          color: [pm10, pm10, pm10, 0.6],//`rgba(${pm10},${pm10},${pm10},0.6)`,
-        }),
-        stroke: new ol.style.Stroke({
-          color: [pm10, pm10, pm10, 0.6]
-        }),
-        radius: 0.1
-      })}));
-
-
-     */
-    features.push(feature);
+    //feature.pm10 = Math.round((point.pm10 / max)* 255);
+    feature.pm10 = point.pm10;
+    vectorLayer.getSource().addFeature(feature);
   }
 
-  // if I uncomment the next part it will not work and the points would not be shown
-/*
-  const layerStyle = new ol.style.Style({
-
-    fill: new Fill({
-      color: 'rgba(255, 255, 255, 0.6)',
-    }),
-    symbol: {
-      symbolType: 'square',
-      size: [
-        'interpolate',
-        ['exponential', 4],
-        ['zoom'],
-        2, 1,
-        15, 60
-      ],
-      color: ['interpolate',
-        [
-          'exponential',
-          0.5
-        ],
-        [
-          'get',
-          'color'
-        ],
-        0,
-        "#000000",
-        255,
-        "#ffffff"
-      ],
-      rotateWithView: false,
-      offset: [0, 0],
-      opacity: 80
-    }
-  });
-*/
-  const vector = new ol.source.Vector({features: []});
-
-  vector.addFeatures(features);
-
-  const vectorLayer = new ol.layer.Vector({
-    source: vector,
-    // style: layerStyle,
-  });
-
-  const map = new ol.Map({
+  var map = new ol.Map({
     target: 'map',
     layers: [
       new ol.layer.Tile({
@@ -124,14 +79,31 @@ const init = () => {
       vectorLayer,
     ],
     view: new ol.View({
-      center: ol.proj.fromLonLat([centerPoint.x, centerPoint.y]),
+      //center: ol.proj.fromLonLat([centerPoint.x, centerPoint.y]),
+      center: ol.proj.fromLonLat([18.5, 54.5]),
       zoom: 10,
-      maxZoom: 13,
+      maxZoom: 15,
     })
   });
   map.render();
 
+  // Function which logs the clicked point:
+  map.on('click', function(evt) {
+    displayFeatureInfo(evt.pixel,evt.coordinate);
+  });
+
+  var displayFeatureInfo = function(pixel,coord) {
+
+    var feature = map.forEachFeatureAtPixel(pixel, function(feature,layer) {
+      return feature;
+    });
+    if (feature===undefined)
+      return;
+
+    console.log(feature)
+  };
+
 };
 
-init();
 
+init();
