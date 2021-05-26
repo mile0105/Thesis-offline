@@ -1,17 +1,18 @@
 //import {matrixDistance} from "./helper";
 
 
-const decreasingFactor = 0.1;
-const heightAllowanceFactor = 5;
-const distancePerStation = 500;
+let decreasingFactor = 0.1;
+const heightAllowanceFactor = 50;
 
 //optimize later
-const floodFill = (points, station, stationI, stationJ, max) => {
+const floodFill = (points, station, stationI, stationJ, max, reductionFactor) => {
 
   const traversed = new Set();
   const fillQueue = [];
+  decreasingFactor*=reductionFactor;
 
   const stationHeight = points[stationI][stationJ].z;
+  console.log(stationHeight);
   const stationPm10Value = station.pm10Value;
 
   fillQueue.push([stationI, stationJ, stationPm10Value]);
@@ -20,7 +21,7 @@ const floodFill = (points, station, stationI, stationJ, max) => {
 
     const [i, j, pm10] = fillQueue.shift();
 
-    if (i < 0 || j < 0 || i > points.length - 1 || j > points[0].length - 1 || (i-stationI + j-stationJ) > distancePerStation) {
+    if (i < 0 || j < 0 || i > points.length - 1 || j > points[0].length - 1) {
       continue; //we reached a wall
     }
 

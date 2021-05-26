@@ -43,20 +43,24 @@ const init = () => {
   });
 
 
-  const points = readPoints();
+  const reductionFactor = 4;
+  const rawPoints = readPoints();
+  const points = reducePoints(rawPoints, reductionFactor);
   const stations = readStations();
+
   let interpolatedPoints = [];
 
   //let max = getMaxPollutionFromStations(stations);
   maxValue = getMaxPollutionFromStations(stations);
 
+  // const station = stations[1];
   for (let station of stations) {
     const nearestPointPositions = getNearestPointPosition(points, station);
 
     const i = nearestPointPositions[0];
     const j = nearestPointPositions[1];
 
-    floodFill(points, station, i, j, maxValue);
+    floodFill(points, station, i, j, maxValue, reductionFactor);
   }
 
   for (let point of points.flat()) {

@@ -37,3 +37,26 @@ const getMaxPollutionFromStations = (stations) => {
   }
   return max;
 };
+
+const reducePoints = (points, factor) => {
+
+  let newPoints = [];
+
+  for(let i = 0; i<points.length; i++) {
+
+    if(i % factor === 0) {
+      let line = [];
+      for(let j = 0; j<points[0].length; j++) {
+        if(j % factor === 0) {
+          line.push(points[i][j]);
+        }
+
+      }
+      newPoints.push(line);
+    }
+
+
+  }
+
+  return newPoints;
+};
