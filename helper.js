@@ -1,14 +1,9 @@
-const euclidianDistance = (pointA, pointB) => {
+const euclideanDistance = (pointA, pointB) => {
 
   const a = pointA.x - pointB.x;
   const b = pointA.y - pointB.y;
 
   return Math.sqrt(a*a + b*b);
-};
-
-const matrixDistance = (i1, i2, j1, j2) => {
-  return Math.abs(i1 - i2) + Math.abs(j1 - j2);
-
 };
 
 const getNearestPointPosition = (points, station) => {
@@ -17,7 +12,7 @@ const getNearestPointPosition = (points, station) => {
 
   for (let i = 0; i < points.length; i++) {
     for (let j = 0; j < points[i].length; j++) {
-      if (euclidianDistance(points[i][j], station) < euclidianDistance(points[nearestI][nearestJ], station)) {
+      if (euclideanDistance(points[i][j], station) < euclideanDistance(points[nearestI][nearestJ], station)) {
         nearestI = i;
         nearestJ = j;
       }

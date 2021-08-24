@@ -2,17 +2,21 @@
 
 
 let decreasingFactor = 0.1;
-const heightAllowanceFactor = 50;
+let windSpeedCoefficient = - 1;
+let windDirectionCoefficient = 'P';
+const heightAllowanceFactor = 80;
+const windOppositeDirectionCoefficient = 2;
 
-//optimize later
-const floodFill = (points, station, stationI, stationJ, max, reductionFactor) => {
+const floodFill = (points, station, stationI, stationJ, reductionFactor, windSpeed, windDirection) => {
 
   const traversed = new Set();
   const fillQueue = [];
   decreasingFactor*=reductionFactor;
+  windDirectionCoefficient = windDirection;
+  windSpeedCoefficient = windSpeed;
+
 
   const stationHeight = points[stationI][stationJ].z;
-  console.log(stationHeight);
   const stationPm10Value = station.pm10Value;
 
   fillQueue.push([stationI, stationJ, stationPm10Value]);
@@ -45,10 +49,71 @@ const floodFill = (points, station, stationI, stationJ, max, reductionFactor) =>
 
     traversed.add(`[${i}][${j}]`);
 
-    fillQueue.push([i+1, j, pm10Value - decreasingFactor]);
-    fillQueue.push([i-1, j, pm10Value - decreasingFactor]);
-    fillQueue.push([i, j+1, pm10Value - decreasingFactor]);
-    fillQueue.push([i, j-1, pm10Value - decreasingFactor]);
+
+    let upPmValue = pm10Value - decreasingFactor;
+    let downPmValue = pm10Value - decreasingFactor;
+    let leftPmValue = pm10Value - decreasingFactor;
+    let rightPmValue = pm10Value - decreasingFactor;
+
+    if (windSpeedCoefficient-- > 0) {
+      switch (windDirection) {
+        case 'E': {
+          rightPmValue = pm10Value;
+          leftPmValue/=windOppositeDirectionCoefficient;
+          break;
+        }
+        case 'S': {
+          downPmValue = pm10Value;
+          upPmValue/=windOppositeDirectionCoefficient;
+          break;
+        }
+        case 'N': {
+          upPmValue = pm10Value;
+          downPmValue/=windOppositeDirectionCoefficient;
+          break;
+        }
+        case 'W': {
+          leftPmValue = pm10Value;
+          rightPmValue/=windOppositeDirectionCoefficient;
+          break;
+        }
+        case 'SW': {
+          downPmValue = pm10Value;
+          leftPmValue = pm10Value;
+          upPmValue/=windOppositeDirectionCoefficient;
+          rightPmValue/=windOppositeDirectionCoefficient;
+          break;
+        }
+        case 'SE': {
+          upPmValue/=windOppositeDirectionCoefficient;
+          leftPmValue/=windOppositeDirectionCoefficient;
+          downPmValue = pm10Value;
+          rightPmValue = pm10Value;
+          break;
+        }
+        case 'NE': {
+          downPmValue/=windOppositeDirectionCoefficient;
+          leftPmValue/=windOppositeDirectionCoefficient;
+          upPmValue = pm10Value;
+          rightPmValue = pm10Value;
+          break;
+        }
+        case 'NW': {
+          downPmValue/=windOppositeDirectionCoefficient;
+          rightPmValue/=windOppositeDirectionCoefficient;
+          upPmValue = pm10Value;
+          leftPmValue = pm10Value;
+          break;
+        }
+
+      }
+
+    }
+
+    fillQueue.push([i+1, j, rightPmValue]);
+    fillQueue.push([i-1, j, leftPmValue]);
+    fillQueue.push([i, j+1, upPmValue]);
+    fillQueue.push([i, j-1, downPmValue]);
 
   }
 };

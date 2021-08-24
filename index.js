@@ -56,11 +56,13 @@ const init = () => {
   // const station = stations[1];
   for (let station of stations) {
     const nearestPointPositions = getNearestPointPosition(points, station);
+    const windSpeed = station.windSpeed < 1.5? 0: station.windSpeed * 100;
+    const windDirection = station.windDirection;
 
     const i = nearestPointPositions[0];
     const j = nearestPointPositions[1];
 
-    floodFill(points, station, i, j, maxValue, reductionFactor);
+    floodFill(points, station, i, j, reductionFactor, windSpeed, windDirection);
   }
 
   for (let point of points.flat()) {

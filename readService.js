@@ -6,7 +6,7 @@ const readStations = () => {
 const readPoints = () => {
   const data = readFile('./files/Tricity_eudem_xyz.bin');
   const points = parsePoints(data);
-  return mapToPointsArray(points);
+  return mapToPointsMatrix(points);
 };
 
 const parsePoints = (fileData) => {
@@ -14,7 +14,7 @@ const parsePoints = (fileData) => {
   pointsArray.pop(); //last element is an empty string
   const points = [];
 
-  for(let point of pointsArray) {
+  for (let point of pointsArray) {
     let coordinates = point.split(' ');
     points.push({
       x: parseFloat(coordinates[0]),
@@ -26,15 +26,15 @@ const parsePoints = (fileData) => {
   return points;
 };
 
-const mapToPointsArray = (points) => {
+const mapToPointsMatrix = (points) => {
   const pointsArray = [];
 
   let currentList = [];
 
   let prevX = Number.MAX_SAFE_INTEGER;
-  for(let i = 0; i<points.length; i++) {
+  for (let i = 0; i < points.length; i++) {
     let x = points[i].x;
-    if(x < prevX) {
+    if (x < prevX) {
       pointsArray.push(currentList);
       currentList = [];
     }
@@ -53,13 +53,15 @@ const parseStations = (fileData) => {
   const features = JSON.parse(fileData).features;
   const stations = [];
 
-  for(let feature of features) {
+  for (let feature of features) {
 
     let properties = feature.properties;
     stations.push({
       x: properties.X,
       y: properties.Y,
       pm10Value: properties.PM10_avg,
+      windSpeed: properties.WS,
+      windDirection: mapWindDirection(properties.WD),
     });
   }
   return stations;
@@ -72,10 +74,10 @@ const readFile = (fileUrl) => {
   const xhrDoc = new XMLHttpRequest();
   xhrDoc.open('GET', fileUrl, false);
 
-  xhrDoc.onreadystatechange = function() {
-    if(this.readyState == 4) {
+  xhrDoc.onreadystatechange = function () {
+    if (this.readyState == 4) {
 
-      if(this.status == 200) {
+      if (this.status == 200) {
         fileData = this.response;
       }
     }
@@ -86,3 +88,43 @@ const readFile = (fileUrl) => {
   return fileData;
 };
 
+
+const mapWindDirection = (windDirection) => {
+
+  if (windDirection <= 30 || windDirection > 330) {
+    return 'E';
+  }
+
+  if (windDirection <= 60) {
+    return 'NE';
+  }
+
+  if (windDirection <= 120) {
+    return 'N';
+  }
+
+  if (windDirection <= 150) {
+    return 'NW';
+  }
+
+  if (windDirection <= 210) {
+    return 'W';
+  }
+
+  if (windDirection <= 240) {
+    return 'SW';
+  }
+
+  if (windDirection <= 300) {
+    return 'S';
+  }
+
+  if (windDirection <= 330) {
+    return 'SE';
+  }
+
+
+  return 'P';
+
+
+}
