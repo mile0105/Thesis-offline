@@ -1,5 +1,5 @@
 const readStations = () => {
-  const data = readFile('./files/Stacje.geojson');
+  const data = readFile('./files/armaag_15_06_2021_1800.geojson');
   return parseStations(data);
 };
 

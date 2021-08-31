@@ -20,16 +20,23 @@ const init = () => {
     var featureColor = null;
     var value = feature.pm10; //feature.get('pm10');
 
-    var pixVal = Math.round((value / maxValue)* 255);
+    var pixelValue = value/maxValue;
+
+    var pixVal = 255 - Math.round((value / maxValue)* 255);
+    var redValue = 255 * pixelValue; //Math.round((value/maxValue*255))
+    var greenValue = - 255 * pixelValue + 255;
+
+    var blueValue = 0;
+
     //console.log(value+","+pixVal+","+maxValue);
 
     return [new ol.style.Style({
       image: new ol.style.Circle({
         fill: new ol.style.Fill({
-          color: [pixVal, pixVal, pixVal, 0.5],
+          color: [redValue, greenValue, blueValue, 0.5],
         }),
         stroke: new ol.style.Stroke({
-          color: [pixVal, pixVal, pixVal, 0.5]
+          color: [redValue, greenValue, blueValue, 0.5]
         }),
         radius: 4.0
       })

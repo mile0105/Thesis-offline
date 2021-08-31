@@ -1,11 +1,12 @@
 //import {matrixDistance} from "./helper";
 
 
-let decreasingFactor = 0.1;
+let decreasingFactor = 0.05;
 let windSpeedCoefficient = - 1;
 let windDirectionCoefficient = 'P';
 const heightAllowanceFactor = 80;
 const windOppositeDirectionCoefficient = 2;
+const shouldCheckWind = false;
 
 const floodFill = (points, station, stationI, stationJ, reductionFactor, windSpeed, windDirection) => {
 
@@ -55,7 +56,7 @@ const floodFill = (points, station, stationI, stationJ, reductionFactor, windSpe
     let leftPmValue = pm10Value - decreasingFactor;
     let rightPmValue = pm10Value - decreasingFactor;
 
-    if (windSpeedCoefficient-- > 0) {
+    if (shouldCheckWind && windSpeedCoefficient-- > 0) {
       switch (windDirection) {
         case 'E': {
           rightPmValue = pm10Value;
