@@ -72,6 +72,24 @@ const init = () => {
     floodFill(points, station, i, j, reductionFactor, windSpeed, windDirection);
   }
 
+
+
+  let nearest = getNearestPointPosition(points, {x: 18.46472222, y: 54.46555556});
+  console.log('Gdynia Dabrowa: ' + points[nearest[0]][nearest[1]].pm10);
+  nearest = getNearestPointPosition(points, {x: 18.49333333, y: 54.56083333});
+  console.log('Gdynia Pogorze: ' + points[nearest[0]][nearest[1]].pm10);
+  nearest = getNearestPointPosition(points, {x: 18.57972222, y: 54.43166667});
+  console.log('Sopot: ' + points[nearest[0]][nearest[1]].pm10);
+  nearest = getNearestPointPosition(points, {x: 18.6575, y: 54.40083333});
+  console.log('Gdansk Nowy Port: ' + points[nearest[0]][nearest[1]].pm10);
+  nearest = getNearestPointPosition(points, {x: 18.62027778, y: 54.38027778});
+  console.log('Gdansk Wrzeszcz: ' + points[nearest[0]][nearest[1]].pm10);
+  nearest = getNearestPointPosition(points, {x: 18.70111111, y: 54.36777778});
+  console.log('Gdansk Stogi: ' + points[nearest[0]][nearest[1]].pm10);
+  nearest = getNearestPointPosition(points, {x: 18.63527778, y: 54.35333333});
+  console.log('Gdansk Srodmiescie: ' + points[nearest[0]][nearest[1]].pm10);
+
+
   for (let point of points.flat()) {
     var feature = new ol.Feature({
       geometry: new ol.geom.Point(

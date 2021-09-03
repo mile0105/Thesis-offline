@@ -1,5 +1,5 @@
 const readStations = () => {
-  const data = readFile('./files/armaag_15_06_2021_1800.geojson');
+  const data = readFile('./files/armaag_31_8_2021_1700.geojson');
   return parseStations(data);
 };
 
@@ -59,7 +59,7 @@ const parseStations = (fileData) => {
     stations.push({
       x: properties.X,
       y: properties.Y,
-      pm10Value: properties.PM10_avg,
+      pm10Value: properties.PM,
       windSpeed: properties.WS,
       windDirection: mapWindDirection(properties.WD),
     });
