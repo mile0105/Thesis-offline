@@ -1,11 +1,11 @@
 //import {matrixDistance} from "./helper";
 
-const BASE_DECREASING_FACTOR = 0.05;
+const BASE_DECREASING_FACTOR = 0.4;
 let windSpeedCoefficient = - 1;
 let windDirectionCoefficient = 'P';
-const heightAllowanceFactor = 80;
+const heightAllowanceFactor = 50;
 const windOppositeDirectionCoefficient = 2;
-const shouldCheckWind = true;
+const shouldCheckWind = false;
 
 const floodFill = (points, station, stationI, stationJ, reductionFactor, windSpeed, windDirection) => {
 

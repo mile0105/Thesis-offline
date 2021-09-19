@@ -1,5 +1,5 @@
 const readStations = () => {
-  const data = readFile('./files/armaag_31_8_2021_1700.geojson');
+  const data = readFile('./files/armaag_31_8_2021_1600.geojson');
   return parseStations(data);
 };
 
@@ -125,6 +125,46 @@ const mapWindDirection = (windDirection) => {
 
 
   return 'P';
+}
+
+const readStationValues = (installationId) => {
+
+  let response;
+  const url = 'https://airapi.airly.eu/v2/measurements/installation?installationId=' + installationId;
+
+
+  const xmlHttpRequest = new XMLHttpRequest();
+  xmlHttpRequest.open('GET', url, false);
+
+  xmlHttpRequest.setRequestHeader('apikey','JxGq22xP1Oosba88dI33Gvk6hqlz4YP3');
+
+
+  xmlHttpRequest.onreadystatechange = function () {
+    if (this.readyState == 4) {
+
+      if (this.status == 200) {
+        response = JSON.parse(this.response);
+      }
+    }
+  };
+
+  xmlHttpRequest.send();
+
+  for(let e of response.history) {
+    let date = new Date(e.fromDateTime);
+
+    if(date.getHours() >= 9 && date.getHours() <=16) {
+
+      let pm10 = -1;
+      for(let val of e.values) {
+        if(val.name === 'PM10') {
+          pm10 = val.value;
+          break;
+        }
+      }
+      console.log(date + ' ' + pm10);
+    }
+  }
 
 
 }
