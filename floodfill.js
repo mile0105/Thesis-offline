@@ -6,6 +6,8 @@ let windDirectionCoefficient = 'P';
 const heightAllowanceFactor = 50;
 const windOppositeDirectionCoefficient = 2;
 const shouldCheckWind = false;
+const diagonalMultiplier = 1.9;
+const horizontalMultiplier = 1.72;
 
 const floodFill = (points, station, stationI, stationJ, reductionFactor, windSpeed, windDirection) => {
 
@@ -50,8 +52,12 @@ const floodFill = (points, station, stationI, stationJ, reductionFactor, windSpe
 
     let upPmValue = pm10Value - decreasingFactor;
     let downPmValue = pm10Value - decreasingFactor;
-    let leftPmValue = pm10Value - decreasingFactor;
-    let rightPmValue = pm10Value - decreasingFactor;
+    let leftPmValue = pm10Value - decreasingFactor * horizontalMultiplier;
+    let rightPmValue = pm10Value - decreasingFactor * horizontalMultiplier;
+    let upRightValue = pm10Value - decreasingFactor * diagonalMultiplier;
+    let upLeftValue = pm10Value - decreasingFactor * diagonalMultiplier;
+    let downRightValue = pm10Value - decreasingFactor * diagonalMultiplier;
+    let downLeftValue = pm10Value - decreasingFactor * diagonalMultiplier;
 
     if (shouldCheckWind && windSpeedCoefficient-- > 0) {
       switch (windDirection) {
@@ -112,6 +118,10 @@ const floodFill = (points, station, stationI, stationJ, reductionFactor, windSpe
     fillQueue.push([i-1, j, leftPmValue]);
     fillQueue.push([i, j+1, upPmValue]);
     fillQueue.push([i, j-1, downPmValue]);
+    fillQueue.push([i-1, j-1, downLeftValue]);
+    fillQueue.push([i+1, j-1, downRightValue]);
+    fillQueue.push([i-1, j+1, upLeftValue]);
+    fillQueue.push([i+1, j+1, upRightValue]);
 
   }
 };

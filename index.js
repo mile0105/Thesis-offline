@@ -15,9 +15,6 @@ const init = () => {
 // readStationValues('3426');
 // };
 
-  // Initialize here for use with styling function:
-  var maxValue=50;
-
   function interpolateBetweenColors(lower, higher, percentage) {
     let newColor = [];
     const colorValues = ['r', 'g', 'b'];
@@ -35,34 +32,39 @@ const init = () => {
     const yellow = [255, 255, 0, 0.5];
     const orange = [255, 165, 0, 0.5];
     const red = [255, 0, 0, 0.5];
-    const purple = [255, 0, 255, 0.5];
 
     if (pm10Value <= 0) {
       return green;
     }
 
-    if (pm10Value <= 5) {
-      return interpolateBetweenColors(green, yellow, pm10Value/5.0);
+    if (pm10Value <= 7) {
+      return interpolateBetweenColors(green, yellow, pm10Value/7.0);
     }
 
-    if (pm10Value <= 13) {
-      return interpolateBetweenColors(yellow, orange, pm10Value/13.0);
+    if (pm10Value <= 14) {
+      return interpolateBetweenColors(yellow, orange, pm10Value/14.0);
     }
 
-    if (pm10Value <= 20) {
-      return interpolateBetweenColors(orange, red, pm10Value/20.0);
+    if (pm10Value <= 21) {
+      return interpolateBetweenColors(orange, red, pm10Value/21.0);
     }
 
-    if (pm10Value <= 27) {
-      return interpolateBetweenColors(red, purple, pm10Value/27.0);
-    }
-    return purple;
+    return red;
   }
 
   function PM10StyleFunction(feature, resolution)
   {
 
-    const color = getColor(feature.pm10);
+    let maxValue = 21;
+    var value = feature.pm10;
+
+    var pixelValue = value/maxValue;
+
+    var redValue = 255 * pixelValue;
+    var greenValue = - 255 * pixelValue + 255;
+
+    var blueValue = 0;
+    let color = getColor(value);
 
     return [new ol.style.Style({
       image: new ol.style.Circle({
@@ -97,7 +99,6 @@ const init = () => {
 
   currentTime = performance.now();
   //let max = getMaxPollutionFromStations(stations);
-  maxValue = getMaxPollutionFromStations(stations);
 
   // const station = stations[1];
   for (let station of stations) {
