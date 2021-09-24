@@ -7,7 +7,7 @@ const heightAllowanceFactor = 50;
 const windOppositeDirectionCoefficient = 2;
 const shouldCheckWind = false;
 const diagonalMultiplier = 1.9;
-const horizontalMultiplier = 1.72;
+const horizontalMultiplier = 1.75;
 
 const floodFill = (points, station, stationI, stationJ, reductionFactor, windSpeed, windDirection) => {
 

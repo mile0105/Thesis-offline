@@ -42,11 +42,11 @@ const init = () => {
     }
 
     if (pm10Value <= 14) {
-      return interpolateBetweenColors(yellow, orange, pm10Value/14.0);
+      return interpolateBetweenColors(yellow, orange, (pm10Value-7.0)/7.0);
     }
 
     if (pm10Value <= 21) {
-      return interpolateBetweenColors(orange, red, pm10Value/21.0);
+      return interpolateBetweenColors(orange, red, (pm10Value-14.0)/7.0);
     }
 
     return red;
