@@ -27,6 +27,15 @@ const init = () => {
     return newColor;
   }
 
+  var vectorLayer = new ol.layer.VectorImage({
+    source: new ol.source.Vector(),
+    style: PM10StyleFunction
+
+  });
+
+  var currentTime = performance.now();
+
+
   function getColor(pm10Value) {
     const green = [0, 255, 0, 0.5];
     const yellow = [255, 255, 0, 0.5];
@@ -36,36 +45,21 @@ const init = () => {
     if (pm10Value <= 0) {
       return green;
     }
-
     if (pm10Value <= 7) {
       return interpolateBetweenColors(green, yellow, pm10Value/7.0);
     }
-
     if (pm10Value <= 14) {
       return interpolateBetweenColors(yellow, orange, (pm10Value-7.0)/7.0);
     }
-
     if (pm10Value <= 21) {
       return interpolateBetweenColors(orange, red, (pm10Value-14.0)/7.0);
     }
-
     return red;
   }
 
   function PM10StyleFunction(feature, resolution)
   {
-
-    let maxValue = 21;
-    var value = feature.pm10;
-
-    var pixelValue = value/maxValue;
-
-    var redValue = 255 * pixelValue;
-    var greenValue = - 255 * pixelValue + 255;
-
-    var blueValue = 0;
-    let color = getColor(value);
-
+    let color = getColor(feature.pm10);
     return [new ol.style.Style({
       image: new ol.style.Circle({
         fill: new ol.style.Fill({
@@ -78,15 +72,6 @@ const init = () => {
       })
     })];
   }
-
-  var vectorLayer = new ol.layer.VectorImage({
-    source: new ol.source.Vector(),
-    style: PM10StyleFunction
-
-  });
-
-
-  var currentTime = performance.now();
   const reductionFactor = 4;
   const rawPoints = readPoints();
   const points = reducePoints(rawPoints, reductionFactor);
